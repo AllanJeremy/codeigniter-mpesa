@@ -129,9 +129,25 @@ class Mpesa_lib
 		return $request_data;
 	}
 
+	protected function get_valid_phone($phone)
+	{
+		$phone = trim($phone);
+		$response_phone = $phone;
+		// If the phone number has 10 digits, replace the first one with 254
+		if(strlen($response_phone) == 10)
+		{
+			$response_phone = str_split($phone);
+			$response_phone[0] = '254';
+			
+			$response_phone = join($response_phone,'');
+		}
+		return $response_phone;
+	}
+
     // Lipa na mpesa stk push
     public function lipa_na_mpesa($phone=NULL,$amount=10,$account_reference='',$description='')
     {
+		$phone = $this->get_valid_phone($phone);
 		$request_data = $this->_get_lipa_na_mpesa_data($phone,$amount,$account_reference,$description);
 
 		$response = $this->ci->api_lib->post_request(
